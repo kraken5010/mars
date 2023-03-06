@@ -9,3 +9,6 @@ superuser:
 
 down:
 	docker-compose down && docker network prune --force
+
+# Get project in docker
+# docker exec -t -i <<container_id>> bash
