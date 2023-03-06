@@ -49,14 +49,14 @@ class DeviceInField(models.Model):
 
     class Meta:
         db_table = "devices_in_fields"
-        verbose_name = "Описание контрагента"
-        verbose_name_plural = "Описание контрагентов"
+        verbose_name = "Оборудование в полях"
+        verbose_name_plural = "Оборудование в полях"
 
 
 def status_validator(order_status):
     if order_status not in ["open", "closed", "in progress", "need info"]:
         raise ValidationError(
-            gettext_lazy('%(order status)s is wrong order status'),
+            gettext_lazy('%(order_status)s is wrong order status'),
             params={'order_status': order_status},
         )
 

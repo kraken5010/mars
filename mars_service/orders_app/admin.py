@@ -8,7 +8,7 @@ class DeviceAdmin(admin.ModelAdmin):
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'device', 'customer', 'order_description', 'created_dt', 'last_dt', 'order_status')
+    list_display = ('id', 'device', 'customer', 'order_description', 'created_dt', 'last_updated_dt', 'order_status')
 
 
 class CustomerAdmin(admin.ModelAdmin):
@@ -16,7 +16,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 class DeviceInFieldAdmin(admin.ModelAdmin):
-    list_display = ('serial_number', 'customer_id', 'analyzer_id', 'owner_status', 'order_status')
+    list_display = ('serial_number', 'customer_id', 'analyzer_id', 'owner_status')
 
 
 admin.site.register(Order, OrderAdmin)
