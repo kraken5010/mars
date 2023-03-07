@@ -62,7 +62,7 @@ class Migration(migrations.Migration):
                 ('order_description', models.TextField(verbose_name='Описание')),
                 ('created_dt', models.DateTimeField(auto_now_add=True, verbose_name='Создано')),
                 ('last_updated_dt', models.DateTimeField(blank=True, null=True, verbose_name='Последнее изменение')),
-                ('order_status', models.TextField(validators=[orders_app.models.status_validator], verbose_name='Статус заявки')),
+                ('order_status', models.TextField(verbose_name='Статус заявки')),
                 ('customer', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, to='orders_app.customer', verbose_name='Конечный пользователь')),
                 ('device', models.ForeignKey(on_delete=django.db.models.deletion.RESTRICT, to='orders_app.deviceinfield', verbose_name='Оборудование')),
             ],
