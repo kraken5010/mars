@@ -2,8 +2,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from datetime import datetime
 
-from django.utils.translation import gettext_lazy
-
 
 class Device(models.Model):
     """Device"""
@@ -28,7 +26,7 @@ class Customer(models.Model):
     customer_city = models.TextField(verbose_name="Город")
 
     def __str__(self):
-        return self.customer_name
+        return f"{self.customer_name} по адресу {self.customer_address}"
 
     class Meta:
         db_table = "customers"
@@ -40,12 +38,12 @@ class DeviceInField(models.Model):
     """Device in field"""
 
     serial_number = models.TextField(verbose_name="Серийный номер")
-    customer_id = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Идентификатор пользователя")
-    analyzer_id = models.ForeignKey(Device, on_delete=models.RESTRICT, verbose_name="Идентификатор оборудования")
+    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Идентификатор пользователя")
+    analyzer = models.ForeignKey(Device, on_delete=models.RESTRICT, verbose_name="Идентификатор оборудования")
     owner_status = models.TextField(verbose_name="Статус принадлежности")
 
     def __str__(self):
-        return f"{self.serial_number} {self.analyzer_id}"
+        return f"{self.analyzer} с\н {self.serial_number} в {self.customer}"
 
     class Meta:
         db_table = "devices_in_fields"
@@ -53,23 +51,22 @@ class DeviceInField(models.Model):
         verbose_name_plural = "Оборудование в полях"
 
 
-def status_validator(order_status):
-    if order_status not in ["open", "closed", "in progress", "need info"]:
-        raise ValidationError(
-            gettext_lazy('%(order_status)s is wrong order status'),
-            params={'order_status': order_status},
-        )
-
-
 class Order(models.Model):
     """Order description class"""
 
+    statuses = (("open", "открыта"),
+                ("closed", "закрыта"),
+                ("in progress", "в работе"),
+                ("need info", "требует уточнений"),)
+
     device = models.ForeignKey(DeviceInField, on_delete=models.RESTRICT, verbose_name="Оборудование")
-    customer = models.ForeignKey(Customer, on_delete=models.RESTRICT, verbose_name="Конечный пользователь")
     order_description = models.TextField(verbose_name="Описание")
     created_dt = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
     last_updated_dt = models.DateTimeField(null=True, blank=True, verbose_name="Последнее изменение")
-    order_status = models.TextField(validators=[status_validator], verbose_name="Статус заявки")
+    order_status = models.TextField(verbose_name="Статус заявки", choices=statuses)
+
+    def __str__(self):
+        return f"Заявка №{self.pk} для {self.device}"
 
     def save(self, *args, **kwargs):
         self.last_updated_dt = datetime.now()
